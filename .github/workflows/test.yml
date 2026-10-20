@@ -1,34 +1,47 @@
-name: Test Setup
+name: Test Script
 
 on:
-  workflow_dispatch:  # Manual trigger only
+  schedule:
+    - cron: '17 10 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  run:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
+      - name: Debug environment
+        run: |
+          echo "Workflow started at:"
+          date -u
+          echo "Python version:"
+          python --version
+          echo "Current directory:"
+          pwd
+          echo "Files:"
+          ls -la
+          echo "main.py:"
+          test -f main.py && echo "Found" || echo "NOT FOUND"
+          echo "requirements.txt:"
+          test -f requirements.txt && echo "Found" || echo "NOT FOUND"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
-      - name: Test Python syntax
-        run: python -m py_compile main.py && echo "Python syntax OK"
-
-      - name: Success
+      - name: Run script
         run: |
-          echo ""
-          echo "========================================"
-          echo "  All checks passed!"
-          echo "  Your setup is ready to go."
-          echo "========================================"
+          python -u main.py
+          echo "Exit code: $?"
