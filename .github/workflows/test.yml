@@ -42,6 +42,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run script
-        run: |
-          python main.py
-          echo "Exit code: $?"
+        env:
+          OWM_APP_KEY: ${{ secrets.OWM_APP_KEY }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
+        run: python -u main.py
