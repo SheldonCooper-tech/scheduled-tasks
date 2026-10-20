@@ -43,5 +43,5 @@ jobs:
 
       - name: Run script
         run: |
-          python -u main.py
+          python main.py
           echo "Exit code: $?"
