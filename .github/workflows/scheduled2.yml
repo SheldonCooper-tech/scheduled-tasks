@@ -2,7 +2,7 @@ name: Daily Script
 
 on:
   schedule:
-    - cron: '27 10 * * *'
+    - cron: '30 10 * * *'
   workflow_dispatch:
 
 permissions:
