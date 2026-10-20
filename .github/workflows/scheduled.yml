@@ -14,7 +14,7 @@ on:
     # ║                                                                ║
     # ║  Use https://time.is/UTC to find your local time in UTC       ║
     # ╚═══════════════════════════════════════════════════════════════╝
-    - cron: '06 10 * * *'
+    - cron: '30 10 * * *'
 
   # This adds a "Run workflow" button so you can test manually
   workflow_dispatch:
@@ -38,4 +38,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run script
-        run: python main.py
+        env:
+          OWM_APP_KEY: ${{ secrets.OWM_APP_KEY }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
+        run: python -u main.py
