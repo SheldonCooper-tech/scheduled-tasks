@@ -3,8 +3,8 @@ import os
 
 
 def telegram_bot_send_text(bot_message):
-    bot_token = os.environ["TG_BOT_TOKEN"]
-    bot_chatID = os.environ["TG_CHAT_ID"]
+    bot_token = os.environ.get("TG_BOT_TOKEN")
+    bot_chatID = os.environ.get("TG_CHAT_ID")
     send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
     response = requests.get(send_text)
@@ -13,9 +13,9 @@ def telegram_bot_send_text(bot_message):
 
 
 config = {
-    "lat": os.environ["LAT"],
-    "lon": os.environ["LON"],
-    "appid": os.environ["OWM_APP_KEY"],
+    "lat": os.environ.get("LAT"),
+    "lon": os.environ.get("LON"),
+    "appid": os.environ.get("OWM_APP_KEY"),
     "cnt": 4,
 }
 end_point = "https://api.openweathermap.org/data/2.5/forecast"
