@@ -2,11 +2,22 @@ name: Daily Script
 
 on:
   schedule:
+    # ╔═══════════════════════════════════════════════════════════════╗
+    # ║  CHANGE THE LINE BELOW to set when your script runs          ║
+    # ║                                                                ║
+    # ║  Format:  'MINUTE HOUR * * *'                                  ║
+    # ║                                                                ║
+    # ║  Examples:                                                     ║
+    # ║    '0 9 * * *'   = 9:00 AM UTC daily                          ║
+    # ║    '30 14 * * *' = 2:30 PM UTC daily                          ║
+    # ║    '0 0 * * *'   = Midnight UTC daily                         ║
+    # ║                                                                ║
+    # ║  Use https://time.is/UTC to find your local time in UTC       ║
+    # ╚═══════════════════════════════════════════════════════════════╝
     - cron: '30 10 * * *'
-  workflow_dispatch:
 
-permissions:
-  contents: read
+  # This adds a "Run workflow" button so you can test manually
+  workflow_dispatch:
 
 jobs:
   run:
@@ -19,22 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-
-      - name: Debug environment
-        run: |
-          echo "Workflow started at:"
-          date -u
-          echo "Python version:"
-          python --version
-          echo "Current directory:"
-          pwd
-          echo "Files:"
-          ls -la
-          echo "main.py:"
-          test -f main.py && echo "Found" || echo "NOT FOUND"
-          echo "requirements.txt:"
-          test -f requirements.txt && echo "Found" || echo "NOT FOUND"
+          python-version: '3.15'
 
       - name: Install dependencies
         run: |
