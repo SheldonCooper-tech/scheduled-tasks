@@ -1,38 +1,31 @@
-# To run and test the code you need to update 4 places:
-# 1. Change MY_EMAIL/MY_PASSWORD to your own details.
-# 2. Go to your email provider and make it allow less secure apps.
-# 3. Update the SMTP ADDRESS to match your email provider.
-# 4. Update birthdays.csv to contain today's month and day.
-# See the solution video in the 100 Days of Python Course for explainations.
-
-
-from datetime import datetime
-import pandas
-import random
-import smtplib
+import requests
 import os
 
-# import os and use it to get the Github repository secrets
-MY_EMAIL = os.environ.get("MY_EMAIL")
-MY_PASSWORD = os.environ.get("MY_PASSWORD")
 
-today = datetime.now()
-today_tuple = (today.month, today.day)
+def telegram_bot_send_text(bot_message):
+    bot_token = os.environ["TG_BOT_TOKEN"]
+    bot_chatID = os.environ["TG_CHAT_ID"]
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
-data = pandas.read_csv("birthdays.csv")
-birthdays_dict = {(data_row["month"], data_row["day"])                  : data_row for (index, data_row) in data.iterrows()}
-if today_tuple in birthdays_dict:
-    birthday_person = birthdays_dict[today_tuple]
-    file_path = f"letter_templates/letter_{random.randint(1, 3)}.txt"
-    with open(file_path) as letter_file:
-        contents = letter_file.read()
-        contents = contents.replace("[NAME]", birthday_person["name"])
+    response = requests.get(send_text)
 
-    with smtplib.SMTP("YOUR EMAIL PROVIDER SMTP SERVER ADDRESS") as connection:
-        connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
-        connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=birthday_person["email"],
-            msg=f"Subject:Happy Birthday!\n\n{contents}"
-        )
+    return response.json()
+
+
+config = {
+    "lat": os.environ["LAT"],
+    "lon": os.environ["LON"],
+    "appid": os.environ["OWM_APP_KEY"],
+    "cnt": 4,
+}
+end_point = "https://api.openweathermap.org/data/2.5/forecast"
+five_day_forecast = requests.get(end_point, params=config)
+five_day_forecast.raise_for_status()
+weather_data = five_day_forecast.json()
+
+chances_to_use_umbrella = 0
+for forecast in weather_data["list"]:
+    if forecast["weather"][0]["id"] < 700:
+        chances_to_use_umbrella += 1
+if chances_to_use_umbrella > 0:
+    telegram_bot_send_text("Bring an umbrella!")
